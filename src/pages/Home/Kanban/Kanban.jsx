@@ -142,13 +142,13 @@ const head = (options) => {
 
         <Col xs={4}>
           <DataTable value={start} showGridlines >
-              <Column field="category" header="Ongoing" body={tasks(ongo)}></Column>
+              <Column field="category" header={head("Ongoing")} body={tasks(ongo)}></Column>
           </DataTable>
         </Col>
 
         <Col xs={4}>
           <DataTable value={start} showGridlines >
-              <Column field="category" header="Done" body={tasks(done)}></Column>
+              <Column field="category" header={head("Done")} body={tasks(done)}></Column>
           </DataTable>
         </Col>
       </Row>

@@ -12,13 +12,13 @@ As seguintes dependências precisam ser instaladas no projeto:
 - [npm i react](https://www.npmjs.com/package/react)
 - [npm i react-dom](https://www.npmjs.com/package/react-dom)
 
+- [npm i primereact](https://primereact.org/installation/)
+- [npm i react-bootstrap bootstrap](https://react-bootstrap.netlify.app/docs/getting-started/introduction)
+
 - **EM ANÁLISE DE USO**
 
-- [npm i primereact](https://primereact.org/installation/)
-
-- [npm i react-bootstrap bootstrap](https://react-bootstrap.netlify.app/docs/getting-started/introduction)
 - [npm i @mui/icons-material](https://www.npmjs.com/package/@mui/icons-material)
-- [npm i zod](https://docs.deno.com/runtime/manual/getting_started/installation)
+- [npm i zustand](https://github.com/pmndrs/zustand/tree/main)
 
 
 - **-----------------------**
