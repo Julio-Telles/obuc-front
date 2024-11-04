@@ -1,10 +1,15 @@
-import "./Modal.css";
-import PropTypes from "prop-types";
-import { MdClose } from "react-icons/md";
-import Button from "../Button/Button";
+//import "./Modal.css";
+//import { MdClose } from "react-icons/md";
+//import Button from "../Button/Button";
 import { FaPlus } from "react-icons/fa";
 
-export default function Modal({ isOpen, onClose, children, title, handleSubmit }) {
+import PropTypes from "prop-types";
+
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+
+export default function Pop({ isOpen, onClose, children, title, handleSubmit }) {
   if (!isOpen) {
     return null;
   }
@@ -15,7 +20,44 @@ export default function Modal({ isOpen, onClose, children, title, handleSubmit }
     onClose();
   };
 
-  return (
+  return (    
+    <div
+      className="modal show"
+      style={{ display: 'block', position: 'initial' }}
+    >
+      <Modal.Dialog>
+        <Modal.Header closeButton>
+          <Modal.Title>Add new task</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+
+      <Form.Group className="mb-3" controlId="formBasicEmail">
+        <Form.Label>Responsible</Form.Label>
+        <Form.Control type="text" placeholder="Enter name" />
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="formBasicText">
+        <Form.Label>Description</Form.Label>
+        <Form.Control type="text" placeholder="Describe your task" />
+      </Form.Group>
+      
+      <Form.Group className="mb-3" controlId="formBasicText">
+        <Form.Label>Category</Form.Label>
+        <Form.Control type="text" placeholder="Describe your category" />
+      </Form.Group>
+      
+
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary">Close</Button>
+          <Button variant="primary"><FaPlus />  Add Task</Button>
+        </Modal.Footer>
+      </Modal.Dialog>
+    </div>
+
+    /*
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <header className="modal-header">
@@ -37,10 +79,11 @@ export default function Modal({ isOpen, onClose, children, title, handleSubmit }
         </form>
       </div>
     </div>
+    */
   );
 }
 
-Modal.propTypes = {
+Pop.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,

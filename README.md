@@ -1,3 +1,34 @@
+## INSTALAÇÃO INICIAL
+
+Para poder rodar, é necessário gerar o projeto [`npm create vite@latest <nomedoprojeto>`](https://pt.vitejs.dev/guide/). Para maiores informações, consulte o exemplo [`ALURA`](https://www.alura.com.br/artigos/vite-criar-aplicacao-react-typescript)
+Copiar todos os arquivos que não estão nas pastas node_modules e .vite (usar o repositório do frontend [`obuc-front`](https://github.com/Julio-Telles/obuc-front))
+
+## INSTALAÇÃO DAS DEPENDÊNCIAS
+
+As seguintes dependências precisam ser instaladas no projeto:
+- [npm i axios](https://axios-http.com/docs/intro)
+- [npm i prop-types](https://www.npmjs.com/package/prop-types)
+- [npm i react-icons](https://www.npmjs.com/package/react-icons)
+- [npm i react](https://www.npmjs.com/package/react)
+- [npm i react-dom](https://www.npmjs.com/package/react-dom)
+
+- **EM ANÁLISE DE USO**
+
+- [npm i primereact](https://primereact.org/installation/)
+
+- [npm i react-bootstrap bootstrap](https://react-bootstrap.netlify.app/docs/getting-started/introduction)
+- [npm i @mui/icons-material](https://www.npmjs.com/package/@mui/icons-material)
+- [npm i zod](https://docs.deno.com/runtime/manual/getting_started/installation)
+
+
+- **-----------------------**
+
+## PARA RODAR O PROJETO LOCAL
+
+```sh
+npm run dev
+```
+
 # Task Management
 
 Este projeto é a interface para uma aplicação de gerenciamento de tarefas, utilizando o React.
@@ -6,31 +37,6 @@ Este projeto é a interface para uma aplicação de gerenciamento de tarefas, ut
 
 - Node.js v21.6.1
 
-## Configuração do Ambiente
-
-Certifique-se de configurar as variáveis de ambiente no arquivo `.env` antes de iniciar o projeto. As variáveis necessárias são:
-
-```
-VITE_HOSTNAME_BACKEND
-```
-
-## Instalação e Uso
-
-### 1. Instale as Dependências
-
-```sh
-npm install
-```
-
-### 2. Configure as Variáveis de Ambiente
-
-Crie um arquivo `.env` com as variáveis descritas anteriormente.
-
-### 3. Inicie a aplicação
-
-```sh
-npm run dev
-```
 
 ## Scripts Disponíveis
 
@@ -38,18 +44,3 @@ npm run dev
 - **build**: Gera a versão otimizada de produção da aplicação com o Vite.
 - **lint**: Executa o ESLint para verificar o código em busca de erros e problemas de formatação.
 - **preview**: Inicia uma prévia local da versão de produção gerada com o Vite.
-
-## Dependências
-
-- **axios**
-- **prop-types**
-- **react-icons**
-- **react**
-- **react-dom**
-
-### Dependências de Desenvolvimento
-
-- **eslint**
-- **vite**
-- **globals**
-

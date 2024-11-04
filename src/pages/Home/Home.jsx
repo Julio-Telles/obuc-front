@@ -4,6 +4,7 @@ import Board from "./Board/Board";
 import Tags from "./Tags/Tags";
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
+import Kanban from "./Kanban/Kanban";
 
 export default function Home() {
   const [currentTab, setCurrentTab] = useState("board");
@@ -13,6 +14,7 @@ export default function Home() {
       { label: "Responsible", column: "assignedTo" },
       { label: "Description", column: "description" },
       { label: "Status", column: "status" },
+      { label: "Category", column: "category" },
     ],
     rows: [],
   });
@@ -44,6 +46,7 @@ export default function Home() {
         { label: "Responsible", column: "assignedTo" },
         { label: "Description", column: "description" },
         { label: "Status", column: "status" },
+        { label: "Category", column: "category" },
       ],
       rows: tasks,
     });
@@ -53,6 +56,9 @@ export default function Home() {
 
   const statusOptions = [{ id: 1, value: "pending", label: "Pending" }];
 
+  /*+++++++++++++++++++++++++++++++++++++*/
+  //AQUI ADICINA A NOVA PÁGINA
+  /*+++++++++++++++++++++++++++++++++++++*/
   const tabs = {
     board: (
       <Board
@@ -62,7 +68,10 @@ export default function Home() {
       />
     ),
     tags: <Tags tags={tags} setTags={setTags} />,
+    kanban: <Kanban />,
   };
+  /*+++++++++++++++++++++++++++++++++++++*/
+  /*+++++++++++++++++++++++++++++++++++++*/
   
   return (
     <div id="home-wrapper">
