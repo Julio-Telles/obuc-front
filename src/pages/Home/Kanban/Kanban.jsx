@@ -103,12 +103,18 @@ export default function Kanban() {
           ajustado.push(JSON.stringify(item.category))
         }        
       })
+      
+      ajustado.map((item, index) => {
+        ajustado.splice(index, 1, item.slice(1, item.length-1));
+      })
   
       ajustado.sort((a, b) => a-b)//ORDENA NÚMEROS
   
       if(isNaN(ajustado.at(0))) {
         ajustado.sort((a, b) => a.localeCompare(b))//ORDENA STRINGS
       }
+
+      ajustado.push("all");
   
       //console.log(" -> " + ajustado)
       
@@ -140,9 +146,6 @@ export default function Kanban() {
           setOngo(resp.filter((status) => status.status === "inProgress"))
           setDone(resp.filter((status) => status.status === "completed"))
           
-          //console.log("-->> PEND: ", pend)
-          //console.log("-->> ONGOING: ", ongo)
-          //console.log("-->> DONE: ", done)
         }
         else {
           console.log("-> STATUS: ", response.status);
@@ -172,9 +175,43 @@ export default function Kanban() {
       );
   };
 
+const filtrar = (cat, opt) => {
+  console.log("OPTION = ", opt);
+  console.log("CATEGORY = ", cat);
+  
+  if(opt === "Pending"){
+    //console.log("filtrando pending")
+    if(cat == "all") {
+      setPend(info.filter((status) => status.status === "pending"))
+    }
+    else{
+      setPend(info.filter((status) => status.status === "pending" && status.category === cat))
+    }
+  }
+  else if(opt === "inProgress"){
+    //console.log("filtrando inProgress")
+    if(cat == "all") {
+      setOngo(info.filter((status) => status.status === "inProgress"))
+    }
+    else{
+      setOngo(info.filter((status) => status.status === "inProgress" && status.category === cat))
+    }
+  }
+  else if(opt === "Completed"){
+    //console.log("filtrando Completed")
+    //console.log("filtrando inProgress")
+    if(cat == "all") {
+      setDone(info.filter((status) => status.status === "completed"))
+    }
+    else{
+      setDone(info.filter((status) => status.status === "completed" && status.category === cat))
+    }
+  }
+}
+
 const head = (options) => {
-  return (     
-    <Dropdown value={options.value} options={categ} onChange={(e) => alert("EM DESENVOLVIMENTO -> filtrar: " + e.value)} placeholder={options} className="p-column-filter" showClear style={{ minWidth: '12rem', border: "2px"}} />
+  return (
+    <Dropdown value={options.value} options={categ} onChange={(e) => filtrar(e.value, options)} placeholder={options} className="p-column-filter" showClear style={{ minWidth: '12rem', border: "2px"}} />
     );
 }
 
