@@ -10,7 +10,7 @@ export default function Cards({ title, description, responsible, category}) {
     <div>
       <Card style={{ width: '11rem' }}>
         <Card.Body>
-          <Card.Title style={{backgroundColor: "#00be78", borderRadius: "4px"}}>{title}</Card.Title>
+          <Card.Title style={{backgroundColor: "#00be78", borderRadius: "4px"}}>Task {title}</Card.Title>
           
       <FloatingLabel controlId="floatingTextarea2" label="Description">
         <Form.Control

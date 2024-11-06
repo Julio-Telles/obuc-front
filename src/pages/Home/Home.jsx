@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import Kanban from "./Kanban/Kanban";
 
-import axios from "axios";
 
 export default function Home() {
   const [currentTab, setCurrentTab] = useState("board");
@@ -35,8 +34,8 @@ export default function Home() {
 
       var resp;
       
-      //console.log("--->>> CHAMADA API AXIOS")
-      //console.log("### dados = ", dados)
+      console.log("--->>> CHAMADA API AXIOS")
+      console.log("### dados = ", dados)
       
       if (httpMethod === "GET") {
         resp = await api.get(endpoint, {
@@ -73,9 +72,13 @@ export default function Home() {
 
 /*
     restCall("tasks", "POST", {
-        "description": "task 4",
-        "status": "pending",
-        "assignedTo": "Eles"
+        "description": "task 5",
+        //"status": "pending",
+        //"status": "inProgress",
+        "status": "completed",
+        //"status": "obsolete",
+        "assignedTo": "Todos",
+        //"category": "personal",
       }
     );
 */
