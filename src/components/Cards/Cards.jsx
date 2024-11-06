@@ -8,15 +8,22 @@ import PropTypes from "prop-types";
 export default function Cards({ title, description, responsible, category}) {
   return (
     <div>
-      <Card style={{ width: '11rem' }}>
-        <Card.Body>
-          <Card.Title style={{backgroundColor: "#00be78", borderRadius: "4px"}}>Task {title}</Card.Title>
+      <Card style={{ width: '9rem' , padding: '0px', alignContent: 'center', textAlign: 'center' }}>
+        <Card.Body
+          style={{ padding: '0px' }}
+        >
+          <Card.Title 
+            style={{backgroundColor: "#00be78", borderRadius: "4px", verticalAlign: 'center' }} 
+            className="mb-0"
+          >
+            {title}
+          </Card.Title>
           
       <FloatingLabel controlId="floatingTextarea2" label="Description">
         <Form.Control
           as="textarea"
           placeholder=""
-          style={{ height: '100px' }}
+          style={{ height: '80px' }}
           >
             {description}
           </Form.Control>
@@ -29,7 +36,7 @@ export default function Cards({ title, description, responsible, category}) {
         label="Responsible"
         className="mb-0"
       >
-        <Form.Control as="email" placeholder="Leave a comment here">
+        <Form.Control as="email" placeholder="Leave a comment here" size='sm'>
           {responsible}
         </Form.Control>
       </FloatingLabel>
@@ -39,13 +46,15 @@ export default function Cards({ title, description, responsible, category}) {
         label="Category"
         className="mb-0"
       >
-        <Form.Control as="email" placeholder="Leave a comment here">
+        <Form.Control as="email" placeholder="Leave a comment here" size='sm'>
           {category}
         </Form.Control>
       </FloatingLabel>
 
-        <Card.Body>
-          <Button variant="primary">Editar</Button>
+        <Card.Body
+          style={{ height: '40px', padding: '0px', alignContent: 'center'}}
+        >
+          <Button variant="primary" size='sm'>Editar</Button>
         </Card.Body>
       </Card>
     </div>

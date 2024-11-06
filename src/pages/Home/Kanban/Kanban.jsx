@@ -167,7 +167,7 @@ export default function Kanban() {
     //console.log("OBJ -> ", obj)
     return (
       <div>
-        <>{obj.map((item) => <Cards key={item.id} title={item.id.toString()} description={item.description} responsible={item.assignedTo} category="category"/>)}</>
+        <>{obj.map((item) => <Cards key={item.id} title={item.title} description={item.description} responsible={item.assignedTo} category={item.category} />)}</>
       </div>
       );
   };

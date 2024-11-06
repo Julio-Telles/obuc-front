@@ -72,13 +72,14 @@ export default function Home() {
 
 /*
     restCall("tasks", "POST", {
-        "description": "task 5",
-        //"status": "pending",
+        "title": "ação 7",
+        "description": "Lorem ipsum elit eros, rhoncus ut neque vel",
+        "status": "pending",
         //"status": "inProgress",
-        "status": "completed",
+        //"status": "completed",
         //"status": "obsolete",
-        "assignedTo": "Todos",
-        //"category": "personal",
+        "assignedTo": "Julio",
+        "category": "work",
       }
     );
 */
