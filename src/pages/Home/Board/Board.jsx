@@ -32,7 +32,9 @@ export default function Board({ tasks, setTasks, status }) {
         return;
       }
       try {
-        await api.delete(`/tasks/${id}`);
+        await api.delete(`/tasks/${id}`, {
+          headers: { "content-type": "application/json" }
+        });
         setTasks((prev) => prev.filter((task) => task.id !== id));
       } catch (error) {
         console.error(error);
@@ -47,8 +49,12 @@ export default function Board({ tasks, setTasks, status }) {
         assignedTo: newTask.assignedTo,
         description: newTask.description,
         status: newTask.status,
+      }, {
+        headers: { "content-type": "application/json" }
       });
-      const response = await api.get("/tasks");
+      const response = await api.get("/tasks", {
+        headers: { "content-type": "application/json" }
+      });
       setTasks(response.data);
     } catch (error) {
       console.error(error);
