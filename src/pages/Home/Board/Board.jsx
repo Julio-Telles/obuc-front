@@ -1,29 +1,127 @@
 import { FaPlus } from "react-icons/fa";
 import Button from "../../../components/Button/Button";
 import "./Board.css";
-import Modal from "../../../components/Modal/Modal";
-import { useCallback, useState } from "react";
-import InputText from "../../../components/InputText/InputText";
-import OptionSelect from "../../../components/OptionSelect/OptionSelect";
+import { useCallback, useEffect, useState } from "react";
 import Table from "../../../components/Table/Table";
 import PropTypes from "prop-types";
 import { api } from "../../../services/api";
 
-export default function Board({ tasks, setTasks, status }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const clearNewTask = {
-    description: "",
-    status: "",
-    assignedTo: "",
-  };
-  const [newTask, setNewTask] = useState(clearNewTask);
+import Pop from "../../../components/Modal/Pop";
+import NewCateg from "../../../components/Modal/NewCateg";
 
-  const handleCloseModal = () => {
-    setIsModalOpen((prev) => !prev);
+const start = 
+{
+  id: "0",
+  title: "",
+  description: "",
+  assignedTo: "",
+  status: "pending",
+  category: "",
+}
+
+export default function Board({ tasks, setTasks }) {
+  const [modalShow, setModalShow] = useState(false);
+  const [newModalShow, setNewModalShow] = useState(false);
+  const [categ, setCateg] = useState([])
+
+  
+  const restCall = async (endpoint, httpMethod, dados) => {
+    try {
+
+      var resp;
+      
+      //console.log("--->>> CHAMADA API AXIOS")
+      //console.log("### dados = ", dados)
+      
+      if (httpMethod === "GET") {
+        resp = await api.get(endpoint, {
+          headers: { "content-type": "application/json" }
+        });
+        
+        setTasks(resp.data);
+      }
+      else if (httpMethod === "POST") {
+        resp = await api.post(endpoint, JSON.stringify(dados), {
+          headers: { "content-type": "application/json" }
+        });
+      }
+      else if (httpMethod === "DELETE") {
+        resp = await api.delete(endpoint, JSON.stringify(dados), {
+          headers: { "content-type": "application/json" }
+        });
+      }
+      else {
+        resp = await api.patch(endpoint, JSON.stringify(dados), {
+          headers: { "content-type": "application/json" }
+        });
+      }
+
+      //console.log("RESPONSE ***AXIOS***: ", resp.data)
+      
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleCloseNewModal = () => {
+    setNewModalShow(false);
+  }
+  
+  const handleClose = () => {
+    setModalShow(false);
   };
 
-  const handleOpenModal = () => {
-    setIsModalOpen((prev) => !prev);
+  const newPost = async () => {
+    setNewModalShow(false);
+    
+    //console.log("--->>> CHAMADA API AXIOS - POST MODAL")
+    //console.log("--->>> start = ", start)
+    
+
+    await api.post("tasks", start, {
+      headers: { "content-type": "application/json" }
+    })
+    .then((response) => {
+      console.log(response.data);
+      if (!response || !response.data) {
+        //console.log('FALHA');
+        return;
+      }
+      if (response.status === 200 || response.status === 304 || response.status === 201) {
+        //console.log("--->>> RETORNO: ", response.data)
+
+        const resp = [...response.data]
+        
+        setTasks([...tasks, resp]);        
+        
+      }
+      else {
+        //console.log("-> STATUS: ", response.status);
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+    .finally(() => {
+      //console.log('FINALLY');        
+      
+      //console.log("ATUALIZA TABELA APÓS O POST")
+      restCall("tasks", "GET", null);
+    });
+
+  };
+
+  const newTask = () => {
+    setModalShow(false);
+    
+    
+    if (start.category === "new") {
+      console.log("NEW TASK NO BOARD");
+      setNewModalShow(true)
+    }
+    else{
+      newPost()
+    }
   };
 
   const handleDeleteRow = useCallback(
@@ -31,6 +129,8 @@ export default function Board({ tasks, setTasks, status }) {
       if (!tasks.rows.length) {
         return;
       }
+      
+      //restCall(`tasks/${id}`, "DELETE", null);
       try {
         await api.delete(`/tasks/${id}`, {
           headers: { "content-type": "application/json" }
@@ -42,72 +142,75 @@ export default function Board({ tasks, setTasks, status }) {
     },
     [tasks.rows.length, setTasks]
   );
+  
 
-  const handleSubmit = async () => {
-    try {
-      await api.post("/tasks", {
-        assignedTo: newTask.assignedTo,
-        description: newTask.description,
-        status: newTask.status,
-      }, {
-        headers: { "content-type": "application/json" }
-      });
-      const response = await api.get("/tasks", {
-        headers: { "content-type": "application/json" }
-      });
-      setTasks(response.data);
-    } catch (error) {
-      console.error(error);
+  const categories = () => {
+    const ajustado = [];
+
+    tasks.rows.map((item) => {
+      //console.log(" --->>> " + JSON.stringify(item))
+      
+      if (ajustado.findIndex((x) => x === JSON.stringify(item.category)) === -1) {
+        ajustado.push(JSON.stringify(item.category))
+      }        
+    })
+    
+    ajustado.map((item, index) => {
+      ajustado.splice(index, 1, item.slice(1, item.length-1));
+    })
+
+    ajustado.sort((a, b) => a-b)//ORDENA NÚMEROS
+
+    if(isNaN(ajustado.at(0))) {
+      ajustado.sort((a, b) => a.localeCompare(b))//ORDENA STRINGS
     }
-  };
 
+    ajustado.push("new");
+
+    console.log(" -> BOARD ajustado = " + ajustado)
+    
+    setCateg(ajustado);
+    //console.log(" --->>> AJUSTANDO")
+    
+  }
+  
+  useEffect(() => {
+    //console.log("--->>> BOARD TASKS: ", tasks.rows)
+    categories();
+  },[])
+  
   return (
     <div id="board-wrapper">
-      <Button onClick={handleOpenModal}>
+      <Button onClick={ () => {
+          setModalShow(true)
+        }
+      }>
         <FaPlus />
         Add Task
       </Button>
+
       <Table data={tasks} handleDeleteRow={handleDeleteRow} />
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        title={`Add new task`}
-        handleSubmit={handleSubmit}
-        setNewTask={setNewTask}
-      >
-        <InputText
-          label="Responsible"
-          placeholder={"Insert task responsible"}
-          required={true}
-          onChange={(e) =>
-            setNewTask((prev) => ({ ...prev, assignedTo: e.target.value }))
-          }
-        />
-        <InputText
-          required={true}
-          label="Description"
-          placeholder={"Insert task description"}
-          textarea
-          onChange={(e) =>
-            setNewTask((prev) => ({ ...prev, description: e.target.value }))
-          }
-        />
-        <OptionSelect
-          label="Status"
-          required={true}
-          placeholder={"Select status"}
-          options={status}
-          onChange={(e) =>
-            setNewTask((prev) => ({ ...prev, status: e.target.value }))
-          }
-        />
-      </Modal>
+
+      <Pop
+        show={modalShow}
+        onHide={handleClose}
+        rest={newTask}
+        categories={categ}
+        data={start}
+      />
+
+      <NewCateg
+        show={newModalShow}
+        onHide={handleCloseNewModal}
+        rest={newPost}
+        data={start}
+      />
+      
     </div>
   );
 }
 
 Board.propTypes = {
-  status: PropTypes.array.isRequired,
   tasks: PropTypes.object.isRequired,
   setTasks: PropTypes.func.isRequired,
 };

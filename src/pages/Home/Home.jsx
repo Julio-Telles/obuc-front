@@ -8,6 +8,7 @@ import Kanban from "./Kanban/Kanban";
 
 
 export default function Home() {
+
   const [currentTab, setCurrentTab] = useState("board");
   const [tasks, setTasks] = useState([]);
   const [tasksTableData, setTasksTableData] = useState({
@@ -99,7 +100,7 @@ export default function Home() {
 
   const [tags, setTags] = useState(mockTags);
 
-  const statusOptions = [{ id: 1, value: "pending", label: "Pending" }];
+  //const statusOptions = [{ id: 1, value: "pending", label: "Pending" }];
 
   /*+++++++++++++++++++++++++++++++++++++*/
   //AQUI ADICINA A NOVA PÁGINA
@@ -107,7 +108,7 @@ export default function Home() {
   const tabs = {
     board: (
       <Board
-        status={statusOptions}
+        //status={statusOptions}
         tasks={tasksTableData}
         setTasks={setTasks}
       />
