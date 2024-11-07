@@ -20,7 +20,7 @@ export default function Home() {
     ],
     rows: [],
   });
-
+/*
   const mockTags = {
     headers: [{ label: "Tag", column: "tag" }],
     rows: [
@@ -29,14 +29,14 @@ export default function Home() {
       { id: 3, tag: "Backend" },
     ],
   };
-
+*/
   const restCall = async (endpoint, httpMethod, dados) => {
     try {
 
       var resp;
       
-      console.log("--->>> CHAMADA API AXIOS")
-      console.log("### dados = ", dados)
+      //console.log("--->>> CHAMADA API AXIOS")
+      console.log("### DADOS INICIAIS = ", dados)
       
       if (httpMethod === "GET") {
         resp = await api.get(endpoint, {
@@ -71,19 +71,6 @@ export default function Home() {
   useEffect(() => {
     restCall("tasks", "GET", null);
 
-/*
-    restCall("tasks", "POST", {
-        "title": "ação 7",
-        "description": "Lorem ipsum elit eros, rhoncus ut neque vel",
-        "status": "pending",
-        //"status": "inProgress",
-        //"status": "completed",
-        //"status": "obsolete",
-        "assignedTo": "Julio",
-        "category": "work",
-      }
-    );
-*/
   }, []);
 
   useEffect(() => {
@@ -98,7 +85,7 @@ export default function Home() {
     });
   }, [tasks, setTasks]);
 
-  const [tags, setTags] = useState(mockTags);
+  //const [tags, setTags] = useState(mockTags);
 
   //const statusOptions = [{ id: 1, value: "pending", label: "Pending" }];
 
@@ -113,7 +100,7 @@ export default function Home() {
         setTasks={setTasks}
       />
     ),
-    tags: <Tags tags={tags} setTags={setTags} />,
+    //tags: <Tags tags={tags} setTags={setTags} />,
     kanban: <Kanban />,
   };
   /*+++++++++++++++++++++++++++++++++++++*/

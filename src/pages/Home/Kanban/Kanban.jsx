@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import "./Kanban.css"
 import Cards from "../../../components/Cards/Cards";
+import Pop from "../../../components/Modal/Pop";
+import NewCateg from "../../../components/Modal/NewCateg";
 import { api } from "../../../services/api";
 
 import { DataTable } from 'primereact/datatable';
@@ -10,6 +12,7 @@ import { Dropdown } from 'primereact/dropdown';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { element } from 'prop-types';
 
 
 //SÓ SERVE PRA INICIAR A TABELA COM 1 ELEMENTO
@@ -23,6 +26,17 @@ const start = [
     category: "",
   }
 ]
+
+var atual = 
+{
+  id: "0",
+  title: "",
+  description: "",
+  assignedTo: "",
+  status: "pending",
+  category: "",
+}
+
 /*
 const info = [
   {
@@ -89,88 +103,187 @@ export default function Kanban() {
   const [ongo, setOngo] = useState([])
   const [done, setDone] = useState([])
   const [categ, setCateg] = useState([])
-
-  useEffect(() => {
-
-    const adjustment = () => {
-      //console.log(" --->>> AJUSTANDO")
-      
-      const ajustado = []
-      info.map((item) => {
-        //console.log(" --->>> " + JSON.stringify(item))
-        
-        if (ajustado.findIndex((x) => x === JSON.stringify(item.category)) === -1) {
-          ajustado.push(JSON.stringify(item.category))
-        }        
-      })
-      
-      ajustado.map((item, index) => {
-        ajustado.splice(index, 1, item.slice(1, item.length-1));
-      })
+  const [editCat, setEditCat] = useState([])
   
-      ajustado.sort((a, b) => a-b)//ORDENA NÚMEROS
+  const [modalShow, setModalShow] = useState(false);
+  const [newModalShow, setNewModalShow] = useState(false);
   
-      if(isNaN(ajustado.at(0))) {
-        ajustado.sort((a, b) => a.localeCompare(b))//ORDENA STRINGS
+  const categories = (recebe) => {
+    const ajustado = [];
+    //console.log(" -> KANBAN recebido = " + recebe)
+
+    recebe.map((item) => {
+      //console.log(" --->>> " + JSON.stringify(item))
+      
+      if (ajustado.findIndex((x) => x === JSON.stringify(item.category)) === -1) {
+        ajustado.push(JSON.stringify(item.category))
+      }        
+    })
+    
+    ajustado.map((item, index) => {
+      ajustado.splice(index, 1, item.slice(1, item.length-1));
+    })
+
+    ajustado.sort((a, b) => a-b)//ORDENA NÚMEROS
+
+    if(isNaN(ajustado.at(0))) {
+      ajustado.sort((a, b) => a.localeCompare(b))//ORDENA STRINGS
+    }
+
+    ajustado.push("all");
+
+    console.log(" -> KANBAN categorias ajustado 1 = " + ajustado)
+    
+    setCateg(ajustado);
+
+    ajustado.pop();
+    ajustado.push("new");
+    console.log(" -> KANBAN categorias ajustado 2 = " + ajustado)
+
+    setEditCat(ajustado);
+    //console.log(" --->>> AJUSTANDO")
+    
+  }
+  
+  const restCall = async () => {
+    var resp;
+    
+    //console.log("--->>> CHAMADA API AXIOS - KANBAN")
+  
+    await api.get("tasks", {
+      headers: { "content-type": "application/json" }
+    })        
+    .then((response) => {
+      console.log(response.data);
+      if (!response || !response.data) {
+        console.log('FALHA');
+        return;
       }
+      if (response.status === 200 || response.status === 304) {
+        //console.log("--->>> RETORNO KANBAN: ", response.data)
 
-      ajustado.push("all");
-  
-      //console.log(" -> " + ajustado)
-      
-      setCateg(ajustado);
+        resp = [...response.data]
 
-    }
-    
-    const restCall = async () => {
-      
-      console.log("--->>> CHAMADA API AXIOS - KANBAN")
-    
-      await api.get("tasks", {
-        headers: { "content-type": "application/json" }
-      })        
-      .then((response) => {
-        console.log(response.data);
-        if (!response || !response.data) {
-          console.log('FALHA');
-          return;
-        }
-        if (response.status === 200 || response.status === 304) {
-          console.log("--->>> RETORNO: ", response.data)
-
-          const resp = [...response.data]
-          
-          setInfo(resp)
-          
-          setPend(resp.filter((status) => status.status === "pending"))
-          setOngo(resp.filter((status) => status.status === "inProgress"))
-          setDone(resp.filter((status) => status.status === "completed"))
-          
-        }
-        else {
-          console.log("-> STATUS: ", response.status);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-      .finally(() => {
-        //console.log('FINALLY');        
+        //console.log("--->>> resp KANBAN: ", resp)
         
-        adjustment()
-      });
+        setInfo(resp)
+        
+        setPend(resp.filter((status) => status.status === "pending"))
+        setOngo(resp.filter((status) => status.status === "inProgress"))
+        setDone(resp.filter((status) => status.status === "completed"))
+        
+      }
+      else {
+        console.log("-> STATUS: ", response.status);
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+    .finally(() => {
+      //console.log('FINALLY');        
+      
+      categories(resp);
+    });
 
-    }
-    
+  }
+  
+  useEffect(() => {    
     restCall()
-
   }, [])
+  
+  const handleCloseNewModal = () => {
+    setNewModalShow(false);
+  }
+  
+  const handleClose = () => {
+    setModalShow(false);
+  };
+
+  
+  const updateTask = () => {
+    setModalShow(false);
+    
+    if (atual.category === "new") {
+      //console.log("NEW TASK NO BOARD");
+      setNewModalShow(true)
+    }
+    else{
+      //console.log("EDITOU KANBAN")
+      newPatch()
+    }
+  };
+  
+  const newPatch = async () => {
+    setNewModalShow(false);
+    
+    //console.log("--->>> CHAMADA API AXIOS - PATCH MODAL")
+    //console.log("--->>> start = ", atual)
+    
+
+    await api.patch(`tasks/${atual.id.toString()}`, atual, {
+      headers: { "content-type": "application/json" }
+    })
+    .then((response) => {
+      console.log(response.data);
+      if (!response || !response.data) {
+        //console.log('FALHA');
+        return;
+      }
+      if (response.status === 200 || response.status === 304 || response.status === 201) {
+        //console.log("--->>> RETORNO: ", response.data)
+
+        const resp = [...response.data]
+        
+        console.log("RETORNO PATCH = ", resp)
+        
+      }
+      else {
+        //console.log("-> STATUS: ", response.status);
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+    .finally(() => {
+      //console.log('FINALLY');        
+      
+      //console.log("ATUALIZA TABELA APÓS O POST")
+      restCall()
+    });
+
+  };
+
+  const editTask = (identity) => {
+
+    //console.log("ID = ", identity);
+
+    //console.log("INDEX = ", info.find((element) => element.id === identity));
+
+    atual = info.find((element) => element.id === identity);
+    
+    //console.log("--->>> atual = ", atual);
+
+    setModalShow(true);
+    
+  };
+
   
   const tasks = (obj) => {
     //console.log("OBJ -> ", obj)
     return (
       <div>
-        <>{obj.map((item) => <Cards key={item.id} title={item.title} description={item.description} responsible={item.assignedTo} category={item.category} />)}</>
+        <>{obj.map((item) => 
+          <Cards 
+            key={item.id} 
+            id={item.id}
+            title={item.title} 
+            description={item.description} 
+            responsible={item.assignedTo} 
+            category={item.category}
+            rest={editTask}
+
+          />)}</>
       </div>
       );
   };
@@ -241,38 +354,22 @@ const head = (options) => {
       </Row>
 
     </Container>
-
+    
+    <Pop
+        show={modalShow}
+        onHide={handleClose}
+        rest={updateTask}
+        categories={editCat}
+        data={atual}
+      />
+      
+      <NewCateg
+        show={newModalShow}
+        onHide={handleCloseNewModal}
+        rest={newPatch}
+        data={start}
+      />
+      
     </div>
   );
 }
-
-
-{/*
-  const pendentes = () => {
-    //console.log("PENDS -> ", pend)
-    return (
-      <div>
-        <>{pend.map((item) => <Cards key={item.id} title={item.title} description={item.description} responsible={item.assignedTo} category={item.category}/>)}</>
-      </div>
-      );
-  };
-  
-  const andamento = () => {
-    //console.log("PRONTOS -> ", pend)
-    return (
-      <div>
-        <>{ongo.map((item) => <Cards key={item.id} title={item.title} description={item.description} responsible={item.assignedTo} category={item.category}/>)}</>
-      </div>
-      );
-  };
-
-  const prontos = () => {
-    //console.log("PRONTOS -> ", pend)
-    return (
-      <div>
-        <>{done.map((item) => <Cards key={item.id} title={item.title} description={item.description} responsible={item.assignedTo} category={item.category}/>)}</>
-      </div>
-      );
-  };
-*/}
-  

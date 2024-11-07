@@ -167,7 +167,7 @@ export default function Board({ tasks, setTasks }) {
 
     ajustado.push("new");
 
-    console.log(" -> BOARD ajustado = " + ajustado)
+    //console.log(" -> BOARD ajustado = " + ajustado)
     
     setCateg(ajustado);
     //console.log(" --->>> AJUSTANDO")

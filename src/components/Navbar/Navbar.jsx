@@ -7,7 +7,7 @@ import { GoColumns } from "react-icons/go";
 export default function Navbar({ currentTab, setCurrentTab }) {
   const navButtons = [
     { id: 1, label: "Board", icon: <PiLayout />, value: "board" },
-    { id: 2, label: "Tags", icon: <GoGear />, value: "tags" },
+    //{ id: 2, label: "Tags", icon: <GoGear />, value: "tags" },
     { id: 3, label: "Kanban", icon: <GoColumns />, value: "kanban" },
   ];
   return (

@@ -51,24 +51,24 @@ export default function Pop( props ){
 
       <Form.Group className="mb-1" controlId="formBasicEmail" >
         <Form.Label>Task</Form.Label>
-        <Form.Control type="text" placeholder="Enter a short title" ref={titulo} />
+        <Form.Control type="text" placeholder="Enter a short title" ref={titulo} defaultValue={props.data.title} />
       </Form.Group>
 
       <Form.Group className="mb-1" controlId="formBasicEmail" >
         <FloatingLabel controlId="floatingTextarea2" label="Description" >
-          <Form.Control type="textarea" placeholder="Describe your task" style={{ height: '60px' }} ref={descricao} />
+          <Form.Control type="textarea" placeholder="Describe your task" style={{ height: '60px' }} ref={descricao}  defaultValue={props.data.description} />
         </FloatingLabel>
       </Form.Group>
       
       <Form.Group className="mb-1" controlId="formBasicEmail" >
         <Form.Label>Responsible</Form.Label>
-        <Form.Control type="text" placeholder="Enter name" ref={responsavel} />
+        <Form.Control type="text" placeholder="Enter name" ref={responsavel}  defaultValue={props.data.assignedTo} />
       </Form.Group>
 
       <Form.Group className="mb-1" controlId="formBasicText" >
         <Form.Label>Status</Form.Label>
         
-        <Form.Select aria-label="Default select example" ref={status}>
+        <Form.Select aria-label="Default select example" ref={status}  defaultValue={props.data.status} >
           <option>pending</option>
           <option>inProgress</option>
           <option>completed</option>
@@ -79,7 +79,7 @@ export default function Pop( props ){
       <Form.Group className="mb-1" controlId="formBasicText" >
         <Form.Label>Category</Form.Label>
         
-        <Form.Select aria-label="Default select example" ref={categoria}>
+        <Form.Select aria-label="Default select example" ref={categoria} defaultValue={props.data.category} >
           {props.categories.map((item, index) => (<option key={index}>{item}</option>))}
         </Form.Select>
       </Form.Group>

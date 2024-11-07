@@ -17,7 +17,7 @@ export default function NewCateg( props ){
 
     //console.log("categoria = ", categoria.current.value)
 
-    if (categoria.current.value === "") {
+    if (categoria.current.value === "" || categoria.current.value === "new") {
       alert("Insira uma categoria válida")      
     }
     else{
@@ -54,12 +54,12 @@ export default function NewCateg( props ){
 
       <Modal.Footer>
         <Button 
-          style={{backgroundColor: "#9E9E9E", borderColor: "#9E9E9E", fontFamily: "Montserrat, Arial", fontWeight: "bold", fontSize: "0.85rem", height: "38px" }} 
+          style={{backgroundColor: "#9E9E9E", borderColor: "#9E9E9E", fontFamily: "Montserrat, Arial", fontWeight: "bold", fontSize: "0.85rem", height: "38px" }}
           onClick={() => props.onHide }
         >
           Close</Button>
         <Button
-          style={{backgroundColor: "#00569e", fontFamily: "Montserrat, Arial", fontWeight: "bold", fontSize: "0.85rem", height: "38px" }} 
+          style={{backgroundColor: "#00569e", fontFamily: "Montserrat, Arial", fontWeight: "bold", fontSize: "0.85rem", height: "38px" }}
           onClick={handleTask}
         >
           <FaPlus />  Add Task
