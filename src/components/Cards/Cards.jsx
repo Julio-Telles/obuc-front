@@ -24,6 +24,8 @@ export default function Cards( props ) {
           as="textarea"
           placeholder=""
           style={{ height: '80px' }}
+          value={props.description}
+          readOnly
           >
             {props.description}
           </Form.Control>

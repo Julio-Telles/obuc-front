@@ -34,7 +34,7 @@ export default function Home() {
 const restCall = async () => {
   var resp;
   
-  console.log("--->>> CHAMADA GET HOME")
+  //console.log("--->>> CHAMADA GET HOME")
   //console.log("### DADOS INICIAIS = ", dados)
 
   await api.get("tasks", {
@@ -42,7 +42,7 @@ const restCall = async () => {
   })        
   .then((response) => {
     
-    console.log("### DADOS HOME = ", response.data)
+    //console.log("### DADOS HOME = ", response.data)
 
     if (!response || !response.data) {
       console.log('FALHA');

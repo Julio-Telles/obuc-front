@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import "./Kanban.css"
 import Cards from "../../../components/Cards/Cards";
 import Pop from "../../../components/Modal/Pop";
@@ -7,12 +7,15 @@ import { api } from "../../../services/api";
 
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Dropdown } from 'primereact/dropdown';
+//import { Dropdown } from 'primereact/dropdown';
+
+import Form from 'react-bootstrap/Form';
+
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { element } from 'prop-types';
+//import { element } from 'prop-types';
 
 
 //SÓ SERVE PRA INICIAR A TABELA COM 1 ELEMENTO
@@ -107,10 +110,13 @@ export default function Kanban() {
   
   const [modalShow, setModalShow] = useState(false);
   const [newModalShow, setNewModalShow] = useState(false);
-  
+    
   const categories = (recebe, complemento) => {
     const ajustado = [];
-    //console.log(" -> KANBAN recebido = " + recebe)
+    ajustado.push("\"all\"");
+    //console.log(" -> KANBAN categorias ajustado 1 = " + ajustado)
+    
+    //console.log(" -> KANBAN recebido = " + JSON.stringify(recebe))
 
     recebe.map((item) => {
       //console.log(" --->>> " + JSON.stringify(item))
@@ -120,6 +126,8 @@ export default function Kanban() {
       }        
     })
     
+    //console.log(" -> KANBAN categorias ajustado 2 = " + ajustado)
+
     ajustado.map((item, index) => {
       ajustado.splice(index, 1, item.slice(1, item.length-1));
     })
@@ -130,15 +138,13 @@ export default function Kanban() {
       ajustado.sort((a, b) => a.localeCompare(b))//ORDENA STRINGS
     }
 
-    ajustado.push("all");
-
-    console.log(" -> KANBAN categorias ajustado 1 = " + ajustado)
+    //console.log(" -> KANBAN categorias ajustado 3 = " + ajustado)
     
     setCateg(ajustado);
 
-    ajustado.pop();
-    ajustado.push(complemento);
-    console.log(" -> KANBAN categorias ajustado 2 = " + ajustado)
+    //ajustado.pop();
+    //ajustado.push(complemento);
+    //console.log(" -> KANBAN categorias ajustado 2 = " + ajustado)
 
     setEditCat(ajustado);
     //console.log(" --->>> AJUSTANDO")
@@ -154,7 +160,7 @@ export default function Kanban() {
       headers: { "content-type": "application/json" }
     })        
     .then((response) => {
-      console.log(response.data);
+      //console.log("--->>> DADOS GET KANBAN", response.data);
       if (!response || !response.data) {
         console.log('FALHA');
         return;
@@ -225,17 +231,25 @@ export default function Kanban() {
       headers: { "content-type": "application/json" }
     })
     .then((response) => {
-      console.log(response.data);
+      //console.log(response.data);
       if (!response || !response.data) {
-        //console.log('FALHA');
+        console.log('FALHA');
         return;
       }
       if (response.status === 200 || response.status === 304 || response.status === 201) {
         //console.log("--->>> RETORNO: ", response.data)
 
+        //const resp = [...response.data]
+        //console.log("RETORNO PATCH = ", resp)
         const resp = [...response.data]
+
+        //console.log("--->>> resp KANBAN: ", resp)
         
-        console.log("RETORNO PATCH = ", resp)
+        setInfo(resp)
+        
+        setPend(resp.filter((status) => status.status === "pending"))
+        setOngo(resp.filter((status) => status.status === "inProgress"))
+        setDone(resp.filter((status) => status.status === "completed"))
         
       }
       else {
@@ -249,7 +263,7 @@ export default function Kanban() {
       //console.log('FINALLY');        
       
       //console.log("ATUALIZA TABELA APÓS O POST")
-      restCall("new")
+      restCall("all")
     });
 
   };
@@ -289,9 +303,9 @@ export default function Kanban() {
   };
 
 const filtrar = (cat, opt) => {
-  console.log("OPTION = ", opt);
-  console.log("CATEGORY = ", cat);
-  
+  //console.log("OPTION = ", opt);
+  //console.log("CATEGORY = ", cat);
+
   if(opt === "Pending"){
     //console.log("filtrando pending")
     if(cat == "all") {
@@ -320,11 +334,25 @@ const filtrar = (cat, opt) => {
       setDone(info.filter((status) => status.status === "completed" && status.category === cat))
     }
   }
+
+
 }
 
 const head = (options) => {
   return (
-    <Dropdown value={options.value} options={categ} onChange={(e) => filtrar(e.value, options)} placeholder={options} className="p-column-filter" showClear style={{ minWidth: '12rem', border: "2px"}} />
+    
+      <Form.Group className="mb-1" controlId="formBasicText" >
+        <Form.Label>{options}</Form.Label>
+        
+        <Form.Select 
+          aria-label="Default select example"
+          onChange={(e) => filtrar(e.target.value, options) }          
+          defaultValue="all"
+        >
+          {categ.map((item, index) => (<option key={index}>{item}</option>))}
+        </Form.Select>
+      </Form.Group>
+    
     );
 }
 
@@ -358,7 +386,7 @@ const head = (options) => {
     <Pop
         show={modalShow}
         onHide={handleClose}
-        rest={updateTask}
+        restapi={updateTask}
         categor={editCat}
         data={atual}
         cabecalho="Edit your Task"
@@ -367,11 +395,22 @@ const head = (options) => {
       <NewCateg
         show={newModalShow}
         onHide={handleCloseNewModal}
-        rest={newPatch}
-        data={start}
+        restapi={newPatch}
+        data={start.at(0)}
         cabecalho="Add new Category"
       />
       
     </div>
   );
 }
+
+/*
+  <Dropdown 
+    value={options.value} 
+    options={categ} 
+    onChange={(e) => filtrar(e.value, options)}
+    placeholder={options}
+    className="p-column-filter" 
+    showClear 
+    style={{ minWidth: '12rem', border: "2px"}} />
+*/
