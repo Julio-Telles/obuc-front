@@ -30,46 +30,49 @@ export default function Home() {
     ],
   };
 */
-  const restCall = async (endpoint, httpMethod, dados) => {
-    try {
 
-      var resp;
-      
-      //console.log("--->>> CHAMADA API AXIOS")
-      console.log("### DADOS INICIAIS = ", dados)
-      
-      if (httpMethod === "GET") {
-        resp = await api.get(endpoint, {
-          headers: { "content-type": "application/json" }
-        });
-        
-        setTasks(resp.data);
-      }
-      else if (httpMethod === "POST") {
-        resp = await api.post(endpoint, JSON.stringify(dados), {
-          headers: { "content-type": "application/json" }
-        });
-      }
-      else if (httpMethod === "DELETE") {
-        resp = await api.delete(endpoint, JSON.stringify(dados), {
-          headers: { "content-type": "application/json" }
-        });
-      }
-      else {
-        resp = await api.patch(endpoint, JSON.stringify(dados), {
-          headers: { "content-type": "application/json" }
-        });
-      }
+const restCall = async () => {
+  var resp;
+  
+  console.log("--->>> CHAMADA GET HOME")
+  //console.log("### DADOS INICIAIS = ", dados)
 
-      console.log("RESPONSE ***AXIOS***: ", resp.data)
-      
-    } catch (error) {
-      console.error(error);
+  await api.get("tasks", {
+    headers: { "content-type": "application/json" }
+  })        
+  .then((response) => {
+    
+    console.log("### DADOS HOME = ", response.data)
+
+    if (!response || !response.data) {
+      console.log('FALHA');
+      return;
     }
-  }
+    if (response.status === 200 || response.status === 304) {
+      //console.log("--->>> RETORNO HOME: ", response.data)
+
+      resp = [...response.data]
+
+      //console.log("--->>> resp HOME: ", resp)
+      
+      setTasks(resp);      
+    }
+    else {
+      console.log("-> STATUS: ", response.status);
+    }
+  })
+  .catch(function (error) {
+    console.log(error);
+  })
+  .finally(() => {
+    //console.log('FINALLY');        
+    
+  });
+
+}
 
   useEffect(() => {
-    restCall("tasks", "GET", null);
+    restCall();
 
   }, []);
 
@@ -113,3 +116,44 @@ export default function Home() {
     </div>
   );
 }
+
+
+/*
+
+  const restCall = async (endpoint, httpMethod, dados) => {
+    try {
+
+      var resp;
+      
+      
+      if (httpMethod === "GET") {
+        resp = await api.get(endpoint, {
+          headers: { "content-type": "application/json" }
+        });
+        
+        setTasks(resp.data);
+      }
+      else if (httpMethod === "POST") {
+        resp = await api.post(endpoint, JSON.stringify(dados), {
+          headers: { "content-type": "application/json" }
+        });
+      }
+      else if (httpMethod === "DELETE") {
+        resp = await api.delete(endpoint, JSON.stringify(dados), {
+          headers: { "content-type": "application/json" }
+        });
+      }
+      else {
+        resp = await api.patch(endpoint, JSON.stringify(dados), {
+          headers: { "content-type": "application/json" }
+        });
+      }
+
+      //console.log("RESPONSE HOME: ", resp.data)
+      
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+*/

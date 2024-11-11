@@ -108,7 +108,7 @@ export default function Kanban() {
   const [modalShow, setModalShow] = useState(false);
   const [newModalShow, setNewModalShow] = useState(false);
   
-  const categories = (recebe) => {
+  const categories = (recebe, complemento) => {
     const ajustado = [];
     //console.log(" -> KANBAN recebido = " + recebe)
 
@@ -137,7 +137,7 @@ export default function Kanban() {
     setCateg(ajustado);
 
     ajustado.pop();
-    ajustado.push("new");
+    ajustado.push(complemento);
     console.log(" -> KANBAN categorias ajustado 2 = " + ajustado)
 
     setEditCat(ajustado);
@@ -145,7 +145,7 @@ export default function Kanban() {
     
   }
   
-  const restCall = async () => {
+  const restCall = async (complemento) => {
     var resp;
     
     //console.log("--->>> CHAMADA API AXIOS - KANBAN")
@@ -183,13 +183,13 @@ export default function Kanban() {
     .finally(() => {
       //console.log('FINALLY');        
       
-      categories(resp);
+      categories(resp, complemento);
     });
 
   }
   
   useEffect(() => {    
-    restCall()
+    restCall("all")
   }, [])
   
   const handleCloseNewModal = () => {
@@ -249,7 +249,7 @@ export default function Kanban() {
       //console.log('FINALLY');        
       
       //console.log("ATUALIZA TABELA APÓS O POST")
-      restCall()
+      restCall("new")
     });
 
   };
@@ -359,8 +359,9 @@ const head = (options) => {
         show={modalShow}
         onHide={handleClose}
         rest={updateTask}
-        categories={editCat}
+        categor={editCat}
         data={atual}
+        cabecalho="Edit your Task"
       />
       
       <NewCateg
@@ -368,6 +369,7 @@ const head = (options) => {
         onHide={handleCloseNewModal}
         rest={newPatch}
         data={start}
+        cabecalho="Add new Category"
       />
       
     </div>

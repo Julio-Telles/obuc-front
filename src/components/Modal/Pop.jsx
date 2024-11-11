@@ -17,7 +17,7 @@ export default function Pop( props ){
   const categoria = useRef()
 
   const handleTask = () => {
-    //console.log("CATEGORIES POP CLICADO = ", props.categories)
+    //console.log("CATEGORIES POP CLICADO = ", props.categor)
     props.data.title = titulo.current.value;
     props.data.description = descricao.current.value;
     props.data.assignedTo = responsavel.current.value;
@@ -34,8 +34,8 @@ export default function Pop( props ){
       alert("Preencha todos os campos corretamente")      
     }
     else{
-      console.log("CATEGORIES POP CLICADO = ", props.data)
-      props.rest();
+      //console.log("CATEGORIES POP CLICADO = ", props.data)
+      props.restapi();
     }
   }
 
@@ -44,7 +44,7 @@ export default function Pop( props ){
       {...props}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Add new task</Modal.Title>
+        <Modal.Title>{props.cabecalho}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -80,7 +80,7 @@ export default function Pop( props ){
         <Form.Label>Category</Form.Label>
         
         <Form.Select aria-label="Default select example" ref={categoria} defaultValue={props.data.category} >
-          {props.categories.map((item, index) => (<option key={index}>{item}</option>))}
+          {props.categor.map((item, index) => (<option key={index}>{item}</option>))}
         </Form.Select>
       </Form.Group>
 
@@ -90,7 +90,7 @@ export default function Pop( props ){
       <Modal.Footer>
         <Button 
           style={{backgroundColor: "#9E9E9E", borderColor: "#9E9E9E", fontFamily: "Montserrat, Arial", fontWeight: "bold", fontSize: "0.85rem", height: "38px" }} 
-          onClick={() => props.onHide }
+          onClick={() => props.onHide() }
         >
           Close</Button>
         <Button
@@ -107,7 +107,8 @@ export default function Pop( props ){
 
 Pop.propTypes = {
   onHide: PropTypes.func.isRequired,
-  rest: PropTypes.func.isRequired,
-  categories: PropTypes.object.isRequired,
+  restapi: PropTypes.func.isRequired,
+  categor: PropTypes.array.isRequired,
   data: PropTypes.object.isRequired,
+  cabecalho: PropTypes.string.isRequired,
 };

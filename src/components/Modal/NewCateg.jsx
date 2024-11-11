@@ -27,7 +27,7 @@ export default function NewCateg( props ){
 
       //console.log("NOVA CATEGORIA -> ", props.data.category)
 
-      props.rest();
+      props.restapi();
 
       props.onHide();
     }
@@ -39,7 +39,7 @@ export default function NewCateg( props ){
       {...props}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Add new task</Modal.Title>
+        <Modal.Title>{props.cabecalho}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -55,7 +55,7 @@ export default function NewCateg( props ){
       <Modal.Footer>
         <Button 
           style={{backgroundColor: "#9E9E9E", borderColor: "#9E9E9E", fontFamily: "Montserrat, Arial", fontWeight: "bold", fontSize: "0.85rem", height: "38px" }}
-          onClick={() => props.onHide }
+          onClick={() => props.onHide() }
         >
           Close</Button>
         <Button
@@ -72,6 +72,7 @@ export default function NewCateg( props ){
 
 NewCateg.propTypes = {
   onHide: PropTypes.func.isRequired,
-  rest: PropTypes.func.isRequired,
+  restapi: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
+  cabecalho: PropTypes.string.isRequired,
 };

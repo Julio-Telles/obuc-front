@@ -9,7 +9,7 @@ import { api } from "../../../services/api";
 import Pop from "../../../components/Modal/Pop";
 import NewCateg from "../../../components/Modal/NewCateg";
 
-const start = 
+var start = 
 {
   id: "0",
   title: "",
@@ -24,14 +24,25 @@ export default function Board({ tasks, setTasks }) {
   const [newModalShow, setNewModalShow] = useState(false);
   const [categ, setCateg] = useState([])
 
+  const zeraStart = () => {    
+    start = {
+      id: "0",
+      title: "",
+      description: "",
+      assignedTo: "",
+      status: "pending",
+      category: "",
+    }
+  }
+
   
   const restCall = async (endpoint, httpMethod, dados) => {
     try {
 
       var resp;
       
-      //console.log("--->>> CHAMADA API AXIOS")
-      //console.log("### dados = ", dados)
+      //console.log("--->>> CHAMADA GET BOARD")
+      //console.log("### dados = ", tasks)
       
       if (httpMethod === "GET") {
         resp = await api.get(endpoint, {
@@ -39,6 +50,10 @@ export default function Board({ tasks, setTasks }) {
         });
         
         setTasks(resp.data);
+        //console.log("### GET EM BOARD = ", resp.data)
+
+        zeraStart();
+        
       }
       else if (httpMethod === "POST") {
         resp = await api.post(endpoint, JSON.stringify(dados), {
@@ -82,17 +97,20 @@ export default function Board({ tasks, setTasks }) {
       headers: { "content-type": "application/json" }
     })
     .then((response) => {
-      console.log(response.data);
+      //console.log(response.data);
       if (!response || !response.data) {
         //console.log('FALHA');
         return;
       }
       if (response.status === 200 || response.status === 304 || response.status === 201) {
-        //console.log("--->>> RETORNO: ", response.data)
+        //console.log("--->>> RETORNO POST: ", response.data)
 
-        const resp = [...response.data]
+        //const resp = [...response.data]
         
-        setTasks([...tasks, resp]);        
+        //setTasks(resp);
+
+        restCall("tasks", "GET", null);
+        categories();
         
       }
       else {
@@ -116,7 +134,7 @@ export default function Board({ tasks, setTasks }) {
     
     
     if (start.category === "new") {
-      console.log("NEW TASK NO BOARD");
+      //console.log("NEW TASK NO BOARD");
       setNewModalShow(true)
     }
     else{
@@ -177,11 +195,16 @@ export default function Board({ tasks, setTasks }) {
   useEffect(() => {
     //console.log("--->>> BOARD TASKS: ", tasks.rows)
     categories();
-  },[])
+  },[tasks])
   
   return (
     <div id="board-wrapper">
       <Button onClick={ () => {
+          if(categ.length === 1) {
+            //console.log("CLICANDO TASK -> categories: ", categ)
+
+            categories();            
+          }
           setModalShow(true)
         }
       }>
@@ -194,16 +217,18 @@ export default function Board({ tasks, setTasks }) {
       <Pop
         show={modalShow}
         onHide={handleClose}
-        rest={newTask}
-        categories={categ}
+        restapi={newTask}
+        categor={categ}
         data={start}
+        cabecalho="Add new Task"
       />
 
       <NewCateg
         show={newModalShow}
         onHide={handleCloseNewModal}
-        rest={newPost}
+        restapi={newPost}
         data={start}
+        cabecalho="Add new Category"
       />
       
     </div>
